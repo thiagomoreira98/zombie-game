@@ -1,64 +1,76 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class PlayerControl : MonoBehaviour {
+public class PlayerControl : MonoBehaviour, IKillable
+{
 
-    public float Speed = 10;
     public LayerMask FloorMask;
     public GameObject GameOverText;
-    public bool IsDead = false;
+    public Interface ScriptInterface;
+    public AudioClip damageSound;
+    public Status status;
 
     private Vector3 direction;
-    private Rigidbody rigidbodyPlayer;
-    private Animator animator;
-
-    void Start() {
-        Time.timeScale = 1;
-        rigidbodyPlayer = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+    private MovePosition movePosition;
+    private Animation animationComponent;
+    
+    void Start()
+    {
+        this.movePosition = GetComponent<MovePosition>();
+        this.animationComponent = GetComponent<Animation>();
+        this.status = GetComponent<Status>();
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         float eixoX = Input.GetAxis("Horizontal");
         float eixoZ = Input.GetAxis("Vertical");
-        direction = new Vector3(eixoX, 0, eixoZ);
-        SetIsRunning();
-
-        if(IsDead) {
-            if(Input.GetButtonDown("Fire1")) {
-                SceneManager.LoadScene("game");
-            }
-        }
+        this.direction = new Vector3(eixoX, 0, eixoZ);
+        this.animationComponent.Walk(this.direction.magnitude);
     }
 
-    void FixedUpdate() {
-        Vector3 moveTo = direction * Time.deltaTime * Speed;
-        rigidbodyPlayer.MovePosition(rigidbodyPlayer.position + moveTo);
-        mousePosition();
+    void FixedUpdate()
+    {
+        this.movePosition.Move(this.direction, this.status.Speed);
+        this.Rotation();
     }
 
-    void SetIsRunning() {
-        if (direction != Vector3.zero) {
-            animator.SetBool("running", true);
-        }
-        else {
-            animator.SetBool("running", false);
-        }
-    }
-
-    void mousePosition() {
+    void Rotation()
+    {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         // Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
         RaycastHit impact;
 
-        if(Physics.Raycast(ray, out impact, 100, FloorMask)) {
-            Vector3 positionPlayerAim = impact.point - transform.position;
-            positionPlayerAim.y = transform.position.y;
-            Quaternion newRotation = Quaternion.LookRotation(positionPlayerAim);
-            rigidbodyPlayer.MoveRotation(newRotation);
+        if(Physics.Raycast(ray, out impact, 100, FloorMask)) 
+        {
+            Vector3 positionPlayerAim = impact.point - this.transform.position;
+            positionPlayerAim.y = this.transform.position.y;
+            this.movePosition.Rotation(positionPlayerAim);
         }
+    }
+
+    public void ReceiveDamage(int damage)
+    {
+        this.status.Life -= damage;
+        this.ScriptInterface.UpdateSliderPlayerLife();
+        AudioControl.instance.PlayOneShot(this.damageSound);
+
+        if(this.isDead())
+        {
+            this.Die();
+        }
+        
+    }
+
+    public void Die()
+    {
+        this.ScriptInterface.GameOver();
+    }
+
+    public bool isDead()
+    {
+        return this.status.Life <= 0;
     }
 }

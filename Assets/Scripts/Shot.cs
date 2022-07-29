@@ -5,22 +5,23 @@ using UnityEngine;
 public class Shot : MonoBehaviour {
 
     public float Speed = 30;
+    public int damage = 1;
     private Rigidbody rigidbodyShot;
 
     private void Start() {
-        rigidbodyShot = GetComponent<Rigidbody>();
+        this.rigidbodyShot = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void FixedUpdate() {
-        rigidbodyShot.MovePosition(rigidbodyShot.position + transform.forward * Speed * Time.deltaTime);
+        this.rigidbodyShot.MovePosition(this.rigidbodyShot.position + this.transform.forward * this.Speed * Time.deltaTime);
     }
 
     void OnTriggerEnter(Collider other) {
         if(other.tag.Equals("Zombie")) {
-            Destroy(other.gameObject);
+            other.GetComponent<ZombieControl>().ReceiveDamage(this.damage);
         }
 
-        Destroy(gameObject);
+        Destroy(this.gameObject);
     }
 }
