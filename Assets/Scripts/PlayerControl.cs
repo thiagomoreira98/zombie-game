@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour, IKillable
+public class PlayerControl : MonoBehaviour, IKillable, ICurable
 {
 
     public LayerMask FloorMask;
-    public GameObject GameOverText;
     public Interface ScriptInterface;
     public AudioClip damageSound;
+    [HideInInspector]
     public Status status;
+    public GameObject BloodParticle;
 
     private Vector3 direction;
     private MovePosition movePosition;
@@ -56,12 +57,18 @@ public class PlayerControl : MonoBehaviour, IKillable
         this.status.Life -= damage;
         this.ScriptInterface.UpdateSliderPlayerLife();
         AudioControl.instance.PlayOneShot(this.damageSound);
+        this.CreateParticleBlood(this.transform.position, Quaternion.LookRotation(this.transform.forward));
 
         if(this.isDead())
         {
             this.Die();
         }
         
+    }
+
+    public void CreateParticleBlood(Vector3 position, Quaternion rotation)
+    {
+        Instantiate(this.BloodParticle, position, rotation);
     }
 
     public void Die()
@@ -72,5 +79,17 @@ public class PlayerControl : MonoBehaviour, IKillable
     public bool isDead()
     {
         return this.status.Life <= 0;
+    }
+
+    public void Heal(int amount)
+    {
+        this.status.Life += amount;
+
+        if(this.status.Life > this.status.InitialLife)
+        {
+            this.status.Life = this.status.InitialLife;
+        }
+
+        this.ScriptInterface.UpdateSliderPlayerLife();
     }
 }

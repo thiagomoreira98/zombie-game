@@ -20,4 +20,9 @@ public class Animation : MonoBehaviour
     {
         this.animator.SetFloat("walking", speed);
     }
+
+    public void Die()
+    {
+        this.animator.SetTrigger("die");
+    }
 }

@@ -110,3 +110,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b26f77f833e3d499aaef11838cce9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  getMedicKitSound: {fileID: 8300000, guid: c8db9f3ee4e3b0d448afc4907650eacf, type: 3}

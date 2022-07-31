@@ -662,6 +662,7 @@ MonoBehaviour:
   deathSound: {fileID: 8300000, guid: 0cd813f531630614c94a7212ac43769e, type: 3}
   MedicKit: {fileID: 1060151288946202, guid: 6150c6f66b7034ec5b3672478195682a, type: 3}
   ZGenerator: {fileID: 0}
+  BloodParticle: {fileID: 241050484372823338, guid: 23da7696454aa814890a887e9754c232, type: 3}
 --- !u!54 &1466214232
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1408,7 +1409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4729257623563424
 Transform:
   m_ObjectHideFlags: 0

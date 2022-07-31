@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Interface
   - Zombie
+  - Boss
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - 
   - Zombie
   - Floor
-  - 
+  - Boss
   - 
   - 
   - 

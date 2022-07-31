@@ -23,4 +23,12 @@ public class MovePosition : MonoBehaviour
         Quaternion newRotation = Quaternion.LookRotation(direction);
         this.rigidbodyCharacter.MoveRotation(newRotation);
     }
+
+    public void Die()
+    {
+        this.rigidbodyCharacter.constraints = RigidbodyConstraints.None;
+        this.rigidbodyCharacter.velocity = Vector3.zero;
+        this.rigidbodyCharacter.isKinematic = false;
+        GetComponent<Collider>().enabled = false;
+    }
 }

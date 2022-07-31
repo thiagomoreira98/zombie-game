@@ -18,10 +18,24 @@ public class Shot : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider other) {
-        if(other.tag.Equals("Zombie")) {
-            other.GetComponent<ZombieControl>().ReceiveDamage(this.damage);
+        switch (other.tag)
+        {
+            case "Zombie":
+                this.CauseDamage(other.GetComponent<ZombieControl>());
+                break;
+            case "Boss":
+                this.CauseDamage(other.GetComponent<BossControl>());
+                break;
         }
 
         Destroy(this.gameObject);
+    }
+
+    void CauseDamage(IKillable killable)
+    {
+        Quaternion rotation = Quaternion.LookRotation(-this.transform.forward);
+
+        killable.ReceiveDamage(this.damage);
+        killable.CreateParticleBlood(this.transform.position, rotation);
     }
 }

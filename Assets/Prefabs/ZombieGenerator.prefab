@@ -48,4 +48,5 @@ MonoBehaviour:
   TimeGenerateZombie: 1
   LayerZombie:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
+  ScriptInterface: {fileID: 0}

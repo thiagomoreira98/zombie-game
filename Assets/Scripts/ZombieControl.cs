@@ -7,16 +7,21 @@ public class ZombieControl : MonoBehaviour, IKillable
 
     public GameObject Player;
     public AudioClip deathSound;
+    public GameObject MedicKit;
+    [HideInInspector]
+    public ZombieGenerator ZGenerator;
+    public GameObject BloodParticle;
 
+    private Interface ScriptInterface;
     private PlayerControl playerControl;
     private MovePosition movePosition;
     private Animation animationComponent;
-    private Interface ScriptInterface;
     private Status status;
     private Vector3 randomPosition;
     private Vector3 direction;
     private float walkTimeCount;
     private float timeBetweenRandomPositions = 4;
+    private float generateMedicKitPercent = 0.1f;
 
     // Start is called before the first frame update
     void Start()
@@ -62,7 +67,7 @@ public class ZombieControl : MonoBehaviour, IKillable
         if(walkTimeCount <= 0)
         {
             this.randomPosition = this.CreateRandomPosition();
-            walkTimeCount += timeBetweenRandomPositions;
+            this.walkTimeCount += this.timeBetweenRandomPositions + Random.Range(-1f, 1f);
         }
 
         bool isNear = Vector3.Distance(this.transform.position, this.randomPosition) <= 0.05;
@@ -89,7 +94,7 @@ public class ZombieControl : MonoBehaviour, IKillable
 
     void randomGenerateZombie()
     {
-        int zombieType = Random.Range(1, 28);
+        int zombieType = Random.Range(1, this.transform.childCount);
         this.transform.GetChild(zombieType).gameObject.SetActive(true);
     }
 
@@ -100,18 +105,37 @@ public class ZombieControl : MonoBehaviour, IKillable
         if(this.isDead())
         {
             this.Die();
-            this.ScriptInterface.IncrementKills();
         }
+    }
+
+    public void CreateParticleBlood(Vector3 position, Quaternion rotation)
+    {
+        Instantiate(this.BloodParticle, position, rotation);
     }
 
     public void Die()
     {
-        Destroy(this.gameObject);
+        Destroy(this.gameObject, 2);
+        this.animationComponent.Die();
+        this.movePosition.Die();
+        this.enabled = false;
         AudioControl.instance.PlayOneShot(this.deathSound);
+        this.GenerateMedicKit(this.generateMedicKitPercent);
+        this.ScriptInterface.UpdateDeathZombiesAmount();
+        this.ZGenerator.DecrementActiveZombies();
     }
 
     public bool isDead()
     {
         return this.status.Life <= 0;
+    }
+
+    void GenerateMedicKit(float percent)
+    {
+        // Random.value generates a value from 0 to 1
+        if(Random.value <= percent)
+        {
+            Instantiate(this.MedicKit, this.transform.position, Quaternion.identity);
+        }
     }
 }

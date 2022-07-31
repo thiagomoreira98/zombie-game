@@ -137,7 +137,7 @@ ModelImporter:
     second: UpperLeg_Right_jnt
   - first:
       74: 7400000
-    second: Ataque
+    second: Attack
   - first:
       74: 7400002
     second: Melee_TwoHanded
@@ -189,7 +189,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Ataque
+      name: Attack
       takeName: Take 001
       internalID: 0
       firstFrame: 810
