@@ -10987,7 +10987,7 @@ MonoBehaviour:
   BossWarnText: {fileID: 689769051}
   IncreaseDificultWarnText: {fileID: 1838639637}
   LevelText: {fileID: 1389748701}
-  nextDificultTime: 5
+  nextDificultTime: 20
   countDificultTime: 0
 --- !u!1001 &1487797421
 PrefabInstance:
